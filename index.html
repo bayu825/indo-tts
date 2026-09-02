@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Indo TTS - Text to Speech Profesional</title>
+  <meta name="description" content="Konversi teks Bahasa Indonesia menjadi suara berkualitas tinggi.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%232563eb'/><path d='M50 20a12 12 0 0 0-12 12v24a12 12 0 0 0 24 0V32A12 12 0 0 0 50 20z' fill='%23ffffff'/><path d='M74 52v4a24 24 0 0 1-48 0v-4h-6v4a30 30 0 0 0 27 29.5V90h-12v6h30v-6H53.5A30 30 0 0 0 80 56v-4h-6z' fill='%23ffffff'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root, html[data-theme="light"] {
+      --bg: #f4f4f7;
+      --card-bg: #ffffff;
+      --text-main: #09090b;
+      --text-muted: #64748b;
+      --border: #e4e4e7;
+      --primary: #18181b;
+      --primary-hover: #27272a;
+      --primary-fg: #ffffff;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --player-bg: #f1f5f9;
+      --danger: #ef4444;
+      --success: #10b981;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    html[data-theme="dark"] {
+      --bg: #09090b;
+      --card-bg: #18181b;
+      --text-main: #fafafa;
+      --text-muted: #a1a1aa;
+      --border: #27272a;
+      --primary: #fafafa;
+      --primary-hover: #e4e4e7;
+      --primary-fg: #18181b;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --player-bg: #27272a;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .logo-icon {
+      width: 42px; height: 42px;
+      background: var(--primary);
+      color: var(--primary-fg);
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    header h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    
+    header p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Mode Switcher Button */
+    .theme-toggle-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .theme-toggle-btn:hover {
+      border-color: var(--accent);
+      background: var(--bg);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-bottom: 24px;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .section {
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section:last-child {
+      border-bottom: none;
+    }
+
+    .label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .char-count {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    /* Textarea */
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      padding: 16px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 1rem;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+    textarea::placeholder { color: var(--text-muted); }
+
+    /* Voice Chips Grid */
+    .voice-group { margin-bottom: 20px; }
+    .voice-group-title { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+    
+    .voice-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 8px;
+    }
+    
+    .voice-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      text-align: left;
+      cursor: pointer;
+      color: var(--text-main);
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .voice-btn:hover {
+      background: var(--bg);
+    }
+    
+    .voice-btn.active {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.1);
+    }
+    
+    .v-name { font-weight: 600; font-size: 0.875rem; }
+    .v-meta { font-size: 0.75rem; color: var(--text-muted); }
+
+    .show-more-btn {
+      background: none; border: none;
+      color: var(--accent); font-size: 0.875rem; font-weight: 600;
+      cursor: pointer; padding: 0; margin-top: 12px;
+    }
+    .show-more-btn:hover { text-decoration: underline; }
+
+    /* Sliders */
+    .sliders-container {
+      display: flex; gap: 24px;
+    }
+    .slider-wrapper { flex: 1; }
+    .slider-header {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.875rem; font-weight: 600; margin-bottom: 10px;
+    }
+    .slider-val { 
+      color: var(--accent); 
+      font-family: monospace; 
+      font-size: 0.85rem; 
+      font-weight: 700;
+      background: rgba(59, 130, 246, 0.1);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+    }
+    
+    input[type=range] {
+      width: 100%;
+      height: 8px;
+      background: var(--border);
+      border-radius: 99px;
+      appearance: none; outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      appearance: none; width: 18px; height: 18px;
+      background: var(--card-bg);
+      border: 3px solid var(--accent);
+      border-radius: 50%; cursor: pointer;
+      box-shadow: var(--shadow-sm);
+    }
+    input[type=range]:focus::-webkit-slider-thumb { border-color: var(--text-main); }
+
+    /* Generate Button */
+    .btn-primary {
+      width: 100%;
+      background: var(--primary);
+      color: var(--primary-fg);
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: opacity 0.2s, transform 0.1s, background-color 0.2s;
+    }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+
+    .loader {
+      width: 18px; height: 18px;
+      border: 2px solid var(--primary-fg);
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      animation: rotation 1s linear infinite;
+    }
+    @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Custom Audio Player */
+    #outputArea { display: none; margin-top: 24px; }
+    
+    .custom-player {
+      background: var(--player-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .player-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .play-pause-btn {
+      width: 48px; height: 48px;
+      min-width: 48px; min-height: 48px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0;
+      transition: transform 0.15s ease, background-color 0.2s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .play-pause-btn:hover {
+      background: var(--accent-hover);
+      transform: scale(1.05);
+    }
+    .play-pause-btn:active { transform: scale(0.95); }
+    .play-pause-btn svg { width: 22px; height: 22px; }
+
+    .progress-container {
+      flex: 1;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+
+    .time-display {
+      display: flex; justify-content: space-between;
+      font-size: 0.8rem; color: var(--text-muted); font-weight: 600;
+      font-family: monospace;
+    }
+
+    input[type=range].audio-progress {
+      width: 100%; height: 8px;
+      background: var(--border);
+      border-radius: 99px;
+      appearance: none; outline: none; cursor: pointer;
+    }
+    input[type=range].audio-progress::-webkit-slider-thumb {
+      appearance: none; width: 16px; height: 16px;
+      background: #ffffff;
+      border: 3px solid var(--accent);
+      border-radius: 50%; cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .btn-secondary {
+      width: 100%;
+      background: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex; justify-content: center; align-items: center; gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: var(--bg); border-color: var(--accent); }
+
+    /* Footer */
+    .app-footer {
+      text-align: center;
+      padding: 16px 0;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    .app-footer strong {
+      color: var(--accent);
+    }
+
+    /* Mobile adaptations */
+    @media (max-width: 600px) {
+      .sliders-container { flex-direction: column; gap: 16px; }
+      .section { padding: 20px 16px; }
+      .theme-toggle-btn span { display: none; } /* On mobile show only sun/moon icon */
+      .theme-toggle-btn { padding: 8px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="22"></line>
+          </svg>
+        </div>
+        <div>
+          <h1>Indo TTS</h1>
+          <p>Text-to-Speech Profesional</p>
+        </div>
+      </div>
+
+      <!-- Button Switcher Siang / Malam -->
+      <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" title="Ubah Mode Siang / Malam">
+        <svg id="sunIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+        </svg>
+        <svg id="moonIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+        </svg>
+        <span id="themeText">Malam</span>
+      </button>
+    </header>
+
+    <div class="card">
+      <div class="section">
+        <div class="label">
+          <span>Teks</span>
+          <span class="char-count" id="charCount">0 / 5000</span>
+        </div>
+        <textarea id="textInput" placeholder="Ketik teks di sini... (Contoh: Selamat pagi, ini adalah uji coba suara.)" maxlength="5000"></textarea>
+      </div>
+
+      <div class="section">
+        <div class="label">Pilih Suara</div>
+        
+        <div class="voice-group">
+          <div class="voice-group-title">Bahasa Indonesia</div>
+          <div class="voice-grid">
+            <button class="voice-btn active" data-voice="id-ID-ArdiNeural" onclick="selectVoice(this)">
+              <div class="v-name">Ardi</div><div class="v-meta">Pria</div>
+            </button>
+            <button class="voice-btn" data-voice="id-ID-GadisNeural" onclick="selectVoice(this)">
+              <div class="v-name">Gadis</div><div class="v-meta">Wanita</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="voice-group" id="extraVoicesGroup" style="display: none; margin-top: 16px;">
+          <div class="voice-group-title">Bahasa Daerah</div>
+          <div class="voice-grid" style="margin-bottom:16px;">
+            <button class="voice-btn" data-voice="jv-ID-DimasNeural" onclick="selectVoice(this)"><div class="v-name">Dimas</div><div class="v-meta">Jawa Pria</div></button>
+            <button class="voice-btn" data-voice="jv-ID-SitiNeural" onclick="selectVoice(this)"><div class="v-name">Siti</div><div class="v-meta">Jawa Wanita</div></button>
+            <button class="voice-btn" data-voice="su-ID-JajangNeural" onclick="selectVoice(this)"><div class="v-name">Jajang</div><div class="v-meta">Sunda Pria</div></button>
+            <button class="voice-btn" data-voice="su-ID-TutiNeural" onclick="selectVoice(this)"><div class="v-name">Tuti</div><div class="v-meta">Sunda Wanita</div></button>
+          </div>
+          
+          <div class="voice-group-title">Multilingual (Aksen Lebih Berkarakter)</div>
+          <div class="voice-grid">
+            <button class="voice-btn" data-voice="en-US-AvaMultilingualNeural" onclick="selectVoice(this)"><div class="v-name">Ava</div><div class="v-meta">Wanita</div></button>
+            <button class="voice-btn" data-voice="en-US-AndrewMultilingualNeural" onclick="selectVoice(this)"><div class="v-name">Andrew</div><div class="v-meta">Pria</div></button>
+            <button class="voice-btn" data-voice="en-US-EmmaMultilingualNeural" onclick="selectVoice(this)"><div class="v-name">Emma</div><div class="v-meta">Wanita</div></button>
+            <button class="voice-btn" data-voice="en-US-BrianMultilingualNeural" onclick="selectVoice(this)"><div class="v-name">Brian</div><div class="v-meta">Pria</div></button>
+          </div>
+        </div>
+        
+        <button class="show-more-btn" id="showMoreBtn" onclick="toggleVoices()">Tampilkan suara daerah & multilingual</button>
+      </div>
+
+      <div class="section">
+        <div class="sliders-container">
+          <div class="slider-wrapper">
+            <div class="slider-header">
+              <span>Kecepatan</span>
+              <span class="slider-val" id="rateVal">Normal (+0%)</span>
+            </div>
+            <input type="range" id="rateSlider" min="-50" max="100" value="0" step="5" oninput="updateSliders()">
+          </div>
+          <div class="slider-wrapper">
+            <div class="slider-header">
+              <span>Nada Suara</span>
+              <span class="slider-val" id="pitchVal">Normal (+0Hz)</span>
+            </div>
+            <input type="range" id="pitchSlider" min="-20" max="20" value="0" step="2" oninput="updateSliders()">
+          </div>
+        </div>
+      </div>
+
+      <div class="section" style="background: var(--bg);">
+        <button id="generateBtn" class="btn-primary" onclick="generateAudio()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          <span>Buat Suara</span>
+        </button>
+        
+        <div id="outputArea">
+          <audio id="audioPlayer" style="display: none;"></audio>
+          
+          <div class="custom-player">
+            <div class="player-controls">
+              <button id="playPauseBtn" class="play-pause-btn" onclick="togglePlayPause()" aria-label="Play or Pause audio">
+                <svg id="playIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <svg id="pauseIcon" style="display:none;" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+              </button>
+              <div class="progress-container">
+                <input type="range" id="audioProgress" class="audio-progress" value="0" min="0" max="100" step="0.1" oninput="seekAudio()">
+                <div class="time-display">
+                  <span id="currentTimeDisplay">0:00</span>
+                  <span id="durationDisplay">0:00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <a id="downloadBtn" class="btn-secondary" download="indo-tts-output.mp3">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Simpan Audio (MP3)
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <footer class="app-footer">
+      <p>Dibuat oleh <strong>@bayu.id</strong></p>
+    </footer>
+  </div>
+
+  <script>
+    // --- Theme (Siang / Malam) Logic ---
+    function getPreferredTheme() {
+      const saved = localStorage.getItem('theme');
+      if (saved) return saved;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      const sunIcon = document.getElementById('sunIcon');
+      const moonIcon = document.getElementById('moonIcon');
+      const themeText = document.getElementById('themeText');
+
+      if (theme === 'dark') {
+        sunIcon.style.display = 'inline';
+        moonIcon.style.display = 'none';
+        themeText.textContent = 'Siang';
+      } else {
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'inline';
+        themeText.textContent = 'Malam';
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      applyTheme(next);
+    }
+
+    // Apply Theme on Initial Load
+    applyTheme(getPreferredTheme());
+
+
+    // --- Elements ---
+    const elements = {
+      textInput: document.getElementById('textInput'),
+      charCount: document.getElementById('charCount'),
+      generateBtn: document.getElementById('generateBtn'),
+      outputArea: document.getElementById('outputArea'),
+      audioPlayer: document.getElementById('audioPlayer'),
+      downloadBtn: document.getElementById('downloadBtn'),
+      rateSlider: document.getElementById('rateSlider'),
+      pitchSlider: document.getElementById('pitchSlider'),
+      rateVal: document.getElementById('rateVal'),
+      pitchVal: document.getElementById('pitchVal'),
+      extraVoicesGroup: document.getElementById('extraVoicesGroup'),
+      showMoreBtn: document.getElementById('showMoreBtn'),
+      
+      // Custom Player Elements
+      playIcon: document.getElementById('playIcon'),
+      pauseIcon: document.getElementById('pauseIcon'),
+      audioProgress: document.getElementById('audioProgress'),
+      currentTimeDisplay: document.getElementById('currentTimeDisplay'),
+      durationDisplay: document.getElementById('durationDisplay')
+    };
+
+    let state = {
+      voice: 'id-ID-ArdiNeural',
+      showExtra: false
+    };
+
+    // --- Audio Player Logic ---
+    function formatTime(seconds) {
+      if (isNaN(seconds) || seconds === Infinity) return "0:00";
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    elements.audioPlayer.addEventListener('loadedmetadata', () => {
+      elements.durationDisplay.textContent = formatTime(elements.audioPlayer.duration);
+    });
+
+    elements.audioPlayer.addEventListener('timeupdate', () => {
+      const current = elements.audioPlayer.currentTime;
+      const duration = elements.audioPlayer.duration;
+      elements.currentTimeDisplay.textContent = formatTime(current);
+      
+      if (duration > 0 && !elements.audioProgress.dataset.seeking) {
+        elements.audioProgress.value = (current / duration) * 100;
+        updateProgressColor(elements.audioProgress.value);
+      }
+    });
+
+    elements.audioPlayer.addEventListener('play', () => {
+      elements.playIcon.style.display = 'none';
+      elements.pauseIcon.style.display = 'block';
+    });
+
+    elements.audioPlayer.addEventListener('pause', () => {
+      elements.playIcon.style.display = 'block';
+      elements.pauseIcon.style.display = 'none';
+    });
+
+    elements.audioPlayer.addEventListener('ended', () => {
+      elements.playIcon.style.display = 'block';
+      elements.pauseIcon.style.display = 'none';
+      elements.audioProgress.value = 0;
+      updateProgressColor(0);
+    });
+
+    function togglePlayPause() {
+      if (!elements.audioPlayer.src) return;
+      if (elements.audioPlayer.paused) {
+        elements.audioPlayer.play();
+      } else {
+        elements.audioPlayer.pause();
+      }
+    }
+
+    elements.audioProgress.addEventListener('mousedown', () => elements.audioProgress.dataset.seeking = 'true');
+    elements.audioProgress.addEventListener('touchstart', () => elements.audioProgress.dataset.seeking = 'true');
+    
+    elements.audioProgress.addEventListener('mouseup', (e) => {
+      delete elements.audioProgress.dataset.seeking;
+      seekAudio(e.target.value);
+    });
+    elements.audioProgress.addEventListener('touchend', (e) => {
+      delete elements.audioProgress.dataset.seeking;
+      seekAudio(e.target.value);
+    });
+
+    function seekAudio(percentValue) {
+      const val = percentValue !== undefined ? percentValue : elements.audioProgress.value;
+      updateProgressColor(val);
+      if (elements.audioPlayer.duration > 0) {
+        elements.audioPlayer.currentTime = (val / 100) * elements.audioPlayer.duration;
+      }
+    }
+
+    function updateProgressColor(pct) {
+      elements.audioProgress.style.background = `linear-gradient(to right, var(--accent) 0%, var(--accent) ${pct}%, var(--border) ${pct}%, var(--border) 100%)`;
+    }
+
+    // --- Text Input Handler ---
+    elements.textInput.addEventListener('input', (e) => {
+      const len = e.target.value.length;
+      elements.charCount.textContent = `${len.toLocaleString()} / 5000`;
+      elements.charCount.style.color = len > 4500 ? 'var(--danger)' : 'var(--text-muted)';
+    });
+
+    // --- Voice Selection ---
+    function selectVoice(btn) {
+      document.querySelectorAll('.voice-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.voice = btn.dataset.voice;
+    }
+
+    // --- Toggle Extra Voices ---
+    function toggleVoices() {
+      state.showExtra = !state.showExtra;
+      elements.extraVoicesGroup.style.display = state.showExtra ? 'block' : 'none';
+      elements.showMoreBtn.textContent = state.showExtra ? 'Sembunyikan suara tambahan' : 'Tampilkan suara daerah & multilingual';
+    }
+
+    // --- Sliders Label & Parameter Updater ---
+    function updateSliders() {
+      const r = parseInt(elements.rateSlider.value);
+      const p = parseInt(elements.pitchSlider.value);
+      
+      let rL = 'Normal';
+      if (r <= -30) rL = 'Sangat Lambat';
+      else if (r < -10) rL = 'Lambat';
+      else if (r < 0) rL = 'Agak Lambat';
+      else if (r === 0) rL = 'Normal';
+      else if (r <= 20) rL = 'Agak Cepat';
+      else if (r <= 50) rL = 'Cepat';
+      else rL = 'Sangat Cepat';
+      
+      const rSign = r >= 0 ? `+${r}` : `${r}`;
+      elements.rateVal.textContent = `${rL} (${rSign}%)`;
+
+      let pL = 'Normal';
+      if (p <= -15) pL = 'Sangat Rendah';
+      else if (p < -5) pL = 'Rendah';
+      else if (p < 0) pL = 'Agak Rendah';
+      else if (p === 0) pL = 'Normal';
+      else if (p <= 5) pL = 'Agak Tinggi';
+      else if (p <= 15) pL = 'Tinggi';
+      else pL = 'Sangat Tinggi';
+      
+      const pSign = p >= 0 ? `+${p}` : `${p}`;
+      elements.pitchVal.textContent = `${pL} (${pSign}Hz)`;
+    }
+
+    // Initialize Sliders Display
+    updateSliders();
+
+    // --- Generate API Call ---
+    async function generateAudio() {
+      const text = elements.textInput.value.trim();
+      if (!text) {
+        alert('Mohon masukkan teks terlebih dahulu.');
+        elements.textInput.focus();
+        return;
+      }
+
+      // UI Loading state
+      elements.generateBtn.disabled = true;
+      elements.generateBtn.innerHTML = '<div class="loader"></div><span>Memproses...</span>';
+      elements.outputArea.style.display = 'none';
+
+      // Format parameters
+      const rVal = parseInt(elements.rateSlider.value);
+      const pVal = parseInt(elements.pitchSlider.value);
+      const rateStr = (rVal >= 0 ? `+${rVal}` : `${rVal}`) + '%';
+      const pitchStr = (pVal >= 0 ? `+${pVal}` : `${pVal}`) + 'Hz';
+
+      const fd = new FormData();
+      fd.append('text', text);
+      fd.append('voice', state.voice);
+      fd.append('rate', rateStr);
+      fd.append('pitch', pitchStr);
+
+      try {
+        const res = await fetch('/tts', { method: 'POST', body: fd });
+        if (!res.ok) throw new Error('Gagal memproses audio');
+        
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        
+        elements.audioPlayer.src = url;
+        elements.downloadBtn.href = url;
+        elements.outputArea.style.display = 'block';
+        elements.audioPlayer.play();
+      } catch (err) {
+        alert('Terjadi kesalahan: ' + err.message);
+      } finally {
+        elements.generateBtn.disabled = false;
+        elements.generateBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg><span>Buat Suara</span>';
+      }
+    }
+  </script>
+</body>
+</html>
